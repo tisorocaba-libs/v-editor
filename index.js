@@ -1,3 +1,3 @@
-import editor from './editor.vue';
+import editor from './src/editor.vue';
 
 export default editor;
