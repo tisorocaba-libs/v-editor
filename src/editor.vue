@@ -1,71 +1,75 @@
 <template>
-	<div></div>
+	<div ref="editor" class="">
+		<div v-html="value"></div>
+	</div>
 </template>
 
 <script>
-	import $ from 'jquery';
-	import 'bootstrap';
-	import 'summernote';
-	import 'summernote/dist/summernote.css';
+	import Quill from 'quill';
+	import 'quill/dist/quill.snow.css';
 
 	export default {
 		props: {
-			lang: {
-				default: 'en-US'
-			},
-
-			placeholder: {
+			value: {
 				default: ''
-			},
-
-			fontNames: {
-				default() {
-					return $.summernote.options.fontNames;
-				}
 			},
 
 			toolbar: {
 				default() {
-					return $.summernote.options.toolbar;
+					return [
+						[{ 'header': [1, 2, false] }],
+						['bold', 'italic', 'underline', 'strike'],
+						[{ 'color': [] }, { 'background': [] }],
+						[{ 'list': 'ordered'}, { 'list': 'bullet' }],
+						[{ 'align': [] }],
+						['link', 'image', 'video'],
+						['clean']
+					]
 				}
+			},
+
+			placeholder: {
+				default: ''
 			}
 		},
 
 		mounted() {
 			this.setup();
-
-			// populate with v-model value, if exists
-			if (this.$vnode.data.model.value) {
-				$(this.$el).summernote('code', this.$vnode.data.model.value);
-			}
-
-			// set a event listener to update v-model
-			$(this.$el).on('summernote.change', (e, content) => this.emitInput(content));
 		},
 
 		beforeDestroy() {
-			$(this.$el).off('summernote.change', this.emitInput);
+			this.quill.off('text-change', this.emitInput);
 		},
 
 		methods: {
 			setup() {
-				// set language
-				if (this.lang !== 'en-US') {
-					require('summernote/dist/lang/summernote-' + this.lang);
-				}
-
-				// start summernote
-				$(this.$el).summernote({
-					lang: this.lang,
-					fontNames: this.fontNames,
+				this.quill = new Quill(this.$el, {
+					theme: 'snow',
 					placeholder: this.placeholder,
-					toolbar: this.toolbar
+					modules: {
+						toolbar: this.toolbar
+					}
 				});
+
+				this.quill.on('text-change', this.emitInput);
 			},
 
-			emitInput(value) {
+			emitInput() {
+				let text = this.quill.getText().trim();
+				let value = this.quill.root.innerHTML;
+
+				if (text === '') {
+					value = '';
+				}
+
 				this.$emit('input', value);
 			}
 		}
 	}
 </script>
+
+<style scoped>
+	.ql-container {
+		font-family: inherit;
+	}
+</style>
