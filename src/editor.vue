@@ -7,6 +7,10 @@
 	import 'quill/dist/quill.snow.css';
 
 	export default {
+		watch: {
+			value: 'valueUpdated'
+		},
+
 		props: {
 			value: {
 				default: ''
@@ -73,6 +77,12 @@
 				}
 
 				this.$emit('input', value);
+			},
+
+			valueUpdated() {
+				if (this.quill) {
+					this.quill.pasteHTML(this.value);
+				}
 			}
 		}
 	}
