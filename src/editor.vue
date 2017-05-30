@@ -9,6 +9,10 @@
 	import 'quill/dist/quill.snow.css';
 
 	export default {
+		watch: {
+			value: 'valueUpdated'
+		},
+
 		props: {
 			value: {
 				default: ''
@@ -50,7 +54,7 @@
 						toolbar: this.toolbar
 					}
 				});
-
+				
 				this.quill.on('text-change', this.emitInput);
 			},
 
@@ -59,10 +63,16 @@
 				let value = this.quill.root.innerHTML;
 
 				if (text === '') {
-					value = '';
+				  	value = '';
 				}
 
 				this.$emit('input', value);
+			},
+
+			valueUpdated() {
+				if (this.quill) {
+					this.quill.pasteHTML(this.value);
+				}
 			}
 		}
 	}
