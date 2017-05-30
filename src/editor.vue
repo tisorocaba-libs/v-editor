@@ -31,11 +31,17 @@
 			}
 		},
 
+		data() {
+			return {
+				cachedValue: ''
+			}
+		},
+
 		watch: {
-			value(newValue, oldValue) {
+			value() {
 				let editorValue = this.quill.root.innerHTML;
 
-				if (editorValue !== this.value) {
+				if (this.cachedValue !== this.value) {
 					this.quill.pasteHTML(this.value);
 				}
 			}
@@ -71,6 +77,8 @@
 				if (text === '') {
 					value = '';
 				}
+
+				this.cachedValue = value;
 
 				this.$emit('input', value);
 			}
