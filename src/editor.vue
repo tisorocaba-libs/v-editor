@@ -54,7 +54,7 @@
 						toolbar: this.toolbar
 					}
 				});
-				
+
 				this.quill.on('text-change', this.emitInput);
 			},
 
@@ -63,7 +63,7 @@
 				let value = this.quill.root.innerHTML;
 
 				if (text === '') {
-				  	value = '';
+					value = '';
 				}
 
 				this.$emit('input', value);
