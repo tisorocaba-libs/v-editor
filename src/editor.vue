@@ -1,7 +1,5 @@
 <template>
-	<div ref="editor" class="">
-		<div v-html="value"></div>
-	</div>
+	<div ref="editor"></div>
 </template>
 
 <script>
@@ -33,6 +31,16 @@
 			}
 		},
 
+		watch: {
+			value(newValue, oldValue) {
+				let editorValue = this.quill.root.innerHTML;
+
+				if (editorValue !== this.value) {
+					this.quill.pasteHTML(this.value);
+				}
+			}
+		},
+
 		mounted() {
 			this.setup();
 		},
@@ -43,13 +51,15 @@
 
 		methods: {
 			setup() {
-				this.quill = new Quill(this.$el, {
+				this.quill = new Quill(this.$refs.editor, {
 					theme: 'snow',
 					placeholder: this.placeholder,
 					modules: {
 						toolbar: this.toolbar
 					}
 				});
+
+				this.quill.pasteHTML(this.value);
 
 				this.quill.on('text-change', this.emitInput);
 			},
