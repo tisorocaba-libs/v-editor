@@ -39,8 +39,6 @@
 
 		watch: {
 			value() {
-				let editorValue = this.quill.root.innerHTML;
-
 				if (this.cachedValue !== this.value) {
 					this.quill.pasteHTML(this.value);
 				}
